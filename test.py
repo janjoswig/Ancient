@@ -1,8 +1,18 @@
+"""Run tests and analyse coverage
+
+Requires pytest, pytest-cov and anybadge
+"""
+
 from html.parser import HTMLParser
 import shlex
 import subprocess
 
+
 class TotalCoverageParser(HTMLParser):
+    """Hacky HTML parser
+
+    Find total code coverage in pytest-cov output
+    """
     def __init__(self):
         super().__init__()
         self.found = False

@@ -5,7 +5,7 @@
 [![Code Coverage](https://raw.githubusercontent.com/janjoswig/Ancient/master/badges/coverage.svg)](https://github.com/janjoswig/Ancient)
 
 # Ancient
-Convert between integers and roman numerals in Python
+Convert between integers and Roman numerals in Python
 
 ## Install
 
