@@ -74,8 +74,6 @@ class SymbolsUnicodeAdditive(Symbols):
         "Ⅾ": 500,
         "Ⅽ": 100,
         "Ⅼ": 50,
-        "Ⅻ": 12,
-        "Ⅺ": 11,
         "Ⅹ": 10,
         "Ⅷ": 8,
         "Ⅶ": 7,
@@ -97,8 +95,8 @@ class SymbolsUnicodeStandard(Symbols):
         "ⅩⅭ": 90,
         "Ⅼ": 50,
         "ⅩⅬ": 40,
-        "Ⅻ": 12,
-        "Ⅺ": 11,
+        # "Ⅻ": 12,
+        # "Ⅺ": 11,
         "Ⅹ": 10,
         "Ⅸ": 9,
         "Ⅷ": 8,
@@ -111,6 +109,63 @@ class SymbolsUnicodeStandard(Symbols):
         "Ⅰ": 1,
     }
 
+
+class SymbolsUnicodeExtended(Symbols):
+    defaults = {
+        "ↈ": 100000,
+        "ↇ": 50000,
+        "ↂ": 10000,
+        "ↁ": 5000,
+        "ↀ": 1000,
+        "ⅭⅯ": 900,
+        "Ⅾ": 500,
+        "ⅭⅮ": 400,
+        "Ⅽ": 100,
+        "ⅩⅭ": 90,
+        "Ⅼ": 50,
+        "ⅩⅬ": 40,
+        # "Ⅻ": 12,
+        # "Ⅺ": 11,
+        "Ⅹ": 10,
+        "Ⅸ": 9,
+        "Ⅷ": 8,
+        "Ⅶ": 7,
+        "Ⅵ": 6,
+        "Ⅴ": 5,
+        "Ⅳ": 4,
+        'Ⅲ': 3,
+        "Ⅱ": 2,
+        "Ⅰ": 1,
+    }
+
+
+class SymbolsUnicodeExtendedClaudian(Symbols):
+    defaults = {
+        "ⅭⅭↀↃↃ": 100000,
+        "ⅮↃↃ": 50000,
+        "ⅭↀↃ": 10000,
+        "ⅮↃ": 5000,
+        "ↀ": 1000,
+        "ⅭⅯ": 900,
+        "Ⅾ": 500,
+        "ⅭⅮ": 400,
+        "Ⅽ": 100,
+        "ⅩⅭ": 90,
+        "Ⅼ": 50,
+        "ⅩⅬ": 40,
+        # "Ⅻ": 12,
+        # "Ⅺ": 11,
+        "Ⅹ": 10,
+        "Ⅸ": 9,
+        "Ⅷ": 8,
+        "Ⅶ": 7,
+        "Ⅵ": 6,
+        "Ⅴ": 5,
+        "Ⅳ": 4,
+        'Ⅲ': 3,
+        "Ⅱ": 2,
+        "Ⅰ": 1,
+    }
 
 class SymbolsASCIIStandard(Symbols):
     defaults = {
@@ -161,13 +216,39 @@ class Roman:
         if number is None:
             self._int = 0
 
-        if isinstance(number, int):
+        elif isinstance(number, int):
             self._int = number
+
+        elif isinstance(number, str):
+            self._int = interpret_roman(number)
+
+        else:
+            try:
+                self._int = int(number)
+            except TypeError:
+                raise TypeError(
+                    "Positional argument `number` should be str or "
+                    "(convertible to) int"
+                    )
 
         assert isinstance(self._int, int)
 
+        self.format = "ascii-std"
+
+    def __str__(self):
+        return roman(self._int, mapping=self.format)
+
     def __repr__(self):
-        return roman(self._int)
+        return f"{self.__class__.__name__}({self._int}, format={self.format!r})"
+
+    @property
+    def format(self):
+        return self._format
+
+    @format.setter
+    def format(self, value):
+        assert value in symbols
+        self._format = value
 
     def __eq__(self, other):
         return self._int == other
@@ -176,6 +257,37 @@ class Roman:
         if isinstance(other, Roman):
             return Roman(self._int + other._int)
         return Roman(self._int + other)
+
+    def __iadd__(self, other):
+        if isinstance(other, Roman):
+            self._int += other._int
+        else:
+            self._int += other
+        return self
+
+    def __radd__(self, other):
+        return Roman(other + self._int)
+
+    def __sub__(self, other):
+        if isinstance(other, Roman):
+            return Roman(self._int - other._int)
+        return Roman(self._int - other)
+
+    def __isub__(self, other):
+        if isinstance(other, Roman):
+            self._int -= other._int
+        else:
+            self._int -= other
+        return self
+
+    def __rsub__(self, other):
+        return Roman(other - self._int)
+
+    def __int__(self):
+        return self._int
+
+    def __index__(self):
+        return self._int
 
 
 def roman(number, /, mapping="ascii-std"):
@@ -203,7 +315,15 @@ def roman(number, /, mapping="ascii-std"):
 
 
 def interpret_roman(string, /, mapping="ascii-additive"):
-    """Return integer value of roman numeral"""
+    """Return integer value of roman numeral
+
+    Args:
+        string (str): Input string to intepret as integer.
+        mapping (str, Mapping): Mapping of symbols to values used
+            for the interpretation.  Could be either a valid string
+            identifier for a mapping in `:obj:symbols` or an instance of
+            a mapping.
+    """
 
     assert isinstance(string, str)
 
@@ -217,6 +337,7 @@ def interpret_roman(string, /, mapping="ascii-additive"):
 
     assert isinstance(_symbols, Mapping)
 
+    # Create list of interpreted integer values
     intermediate = []
     j = len(string)
     while string:
@@ -229,6 +350,7 @@ def interpret_roman(string, /, mapping="ascii-additive"):
             j -= 1
             assert j > 0, "Cannot interpret symbols"
 
+    # Apply subtraction rule
     for i in range(1, len(intermediate)):
         if intermediate[-(i + 1)] >= intermediate[-i]:
             continue
@@ -244,4 +366,6 @@ symbols = {
     "ascii-variant": SymbolsASCIIVariant(),
     "unicode-additive": SymbolsUnicodeAdditive(),
     "unicode-std": SymbolsUnicodeStandard(),
+    "unicode-extended": SymbolsUnicodeExtended(),
+    "unicode-extended-claudian": SymbolsUnicodeExtendedClaudian(),
 }
