@@ -2,7 +2,6 @@ from html.parser import HTMLParser
 import shlex
 import subprocess
 
-
 class TotalCoverageParser(HTMLParser):
     def __init__(self):
         super().__init__()
@@ -24,16 +23,18 @@ class TotalCoverageParser(HTMLParser):
             self.found = False
 
 
-parser = TotalCoverageParser()
+if __name__ == "__main__":
+    test_command = "pytest --cov-report html --cov=ancient"
+    subprocess.run(shlex.split(test_command))
 
-with open("../htmlcov/index.html") as f_:
-    coverage_content = f_.read()
+    with open("htmlcov/index.html") as f_:
+        coverage_content = f_.read()
 
-parser.feed(coverage_content)
+    parser = TotalCoverageParser()
+    parser.feed(coverage_content)
 
-gen_badge_command = (
-    f"anybadge --value={parser.coverage_value} "
-    f"--file=coverage.svg --overwrite coverage"
-)
-
-subprocess.run(shlex.split(gen_badge_command))
+    gen_badge_command = (
+        f"anybadge --value={parser.coverage_value} "
+        f"--file=badges/coverage.svg --overwrite coverage"
+    )
+    subprocess.run(shlex.split(gen_badge_command))
