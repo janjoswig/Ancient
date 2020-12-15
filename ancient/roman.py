@@ -167,6 +167,7 @@ class SymbolsUnicodeExtendedClaudian(Symbols):
         "Ⅰ": 1,
     }
 
+
 class SymbolsASCIIStandard(Symbols):
     defaults = {
         "M": 1000,
@@ -306,6 +307,11 @@ def roman(number, /, mapping="ascii-std"):
         return _symbols.nullum
 
     string_repr = ""
+
+    if number < 0:
+        string_repr += "-"
+        number = abs(number)
+
     for symbol, value in _symbols.items():
         while number >= value:
             string_repr += symbol

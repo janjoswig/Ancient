@@ -5,6 +5,7 @@ from ancient import roman
 
 INT_TO_ROMAN_ASCII_ADDITIVE_CASES = [
     (0, "N"),
+    (-1, "-I"),
     (1, "I"),
     (2, "II"),
     (3, "III"),
@@ -170,7 +171,8 @@ class TestRomanNumbers:
 
     @pytest.mark.parametrize(
         "format,number,expected",
-        [("ascii-std", 9, "IX"), ("ascii-additive", 9, "VIIII")]
+        [("ascii-std", 9, "IX"),
+         ("ascii-additive", 9, "VIIII")]
     )
     def test_alter_format(self, format, number, expected):
         roman_number = roman.Roman(number)
@@ -226,6 +228,7 @@ class TestRomanNumbers:
         assert b == 1
         b -= a
         assert b == 0
+        assert b - 2 == -2
 
     def assert_symbols(self, symbols):
         assert isinstance(symbols, MutableMapping)
