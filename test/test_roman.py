@@ -230,6 +230,45 @@ class TestRomanNumbers:
         assert b == 0
         assert b - 2 == -2
 
+    def test_mul(self):
+        a = roman.Roman(2)
+        b = roman.Roman(3)
+        c = b * a
+        assert c == 6
+        assert isinstance(c, roman.Roman)
+        assert b * 1 == 3
+        assert 2 * a == 4
+        b *= 3
+        assert b == 9
+        b *= a
+        assert b == 18
+
+    def test_truediv(self):
+        a = roman.Roman(2)
+        b = roman.Roman(5)
+        c = b / a
+        assert c == 2
+        assert isinstance(c, roman.Roman)
+        assert b / 1 == 5
+        assert 2 / a == 1
+        b /= 3
+        assert b == 1
+        b /= a
+        assert b == 0
+
+    def test_floordiv(self):
+        a = roman.Roman(2)
+        b = roman.Roman(5)
+        c = b // a
+        assert c == 2
+        assert isinstance(c, roman.Roman)
+        assert b // 1 == 5
+        assert 2 // a == 1
+        b //= 3
+        assert b == 1
+        b //= a
+        assert b == 0
+
     def assert_symbols(self, symbols):
         assert isinstance(symbols, MutableMapping)
         symbol_values = list(symbols.values())

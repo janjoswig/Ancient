@@ -284,6 +284,45 @@ class Roman:
     def __rsub__(self, other):
         return Roman(other - self._int)
 
+    def __mul__(self, other):
+        if isinstance(other, Roman):
+            return Roman(self._int * other._int)
+        return Roman(self._int * other)
+
+    def __imul__(self, other):
+        if isinstance(other, Roman):
+            self._int *= other._int
+        else:
+            self._int *= other
+        return self
+
+    def __rmul__(self, other):
+        return Roman(other * self._int)
+
+    def __floordiv__(self, other):
+        if isinstance(other, Roman):
+            return Roman(self._int // other._int)
+        return Roman(self._int // other)
+
+    def __ifloordiv__(self, other):
+        if isinstance(other, Roman):
+            self._int //= other._int
+        else:
+            self._int //= other
+        return self
+
+    def __rfloordiv__(self, other):
+        return Roman(other // self._int)
+
+    def __truediv__(self, other):
+        return self.__floordiv__(other)
+
+    def __itruediv__(self, other):
+        return self.__ifloordiv__(other)
+
+    def __rtruediv__(self, other):
+        return self.__rfloordiv__(other)
+
     def __int__(self):
         return self._int
 

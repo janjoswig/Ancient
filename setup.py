@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as f_:
 
 setup(
     name='ancient',
-    version="0.0.2",
+    version="1.0.0",
     author="Jan-Oliver Joswig",
     author_email="jan.joswig@fu-berlin.de",
     description="Convert between integers and Roman numerals",
