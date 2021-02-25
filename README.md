@@ -12,7 +12,7 @@ Convert between integers and Roman numerals in Python
 Install from PyPi
 
 ```bash
-$ pip install cnnclustering
+$ pip install ancient
 ```
 
 or clone the developement version from GitHub
